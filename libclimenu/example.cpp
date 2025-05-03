@@ -6,7 +6,7 @@
 using namespace std;
 
 int main() {
-    libclimenu::Menu menu("libclimenu example", "1.0", {"print random number", "print something"});
+    libclimenu::Menu menu("libclimenu example", "1.0", {"print random number", "print something", "info"});
     libclimenu::clear();
     bool toBreak = 0;
     while (!toBreak) {
@@ -40,6 +40,15 @@ int main() {
                 getline(cin, toPrint);
                 libclimenu::clear();
                 cout << "you typed: " << toPrint << "\n";
+                libclimenu::sep();
+                break;
+            }
+            case 3: {
+                libclimenu::clear();
+                cout << menu.name << " v" << menu.version << "\n"
+                << "licensed under MIT license\n"
+                << "this project comes from greg0rygreg/test-repos on github,\n"
+                << "because it is not big enough to have its own repo\n";
                 libclimenu::sep();
                 break;
             }

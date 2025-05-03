@@ -5,11 +5,10 @@
 
 namespace libclimenu {
     class Menu {
-        private:
-        std::string name;
-        std::string version;
-        std::vector<std::string> options;
         public:
+            std::string name;
+            std::string version;
+            std::vector<std::string> options;
             Menu(std::string name, std::string version, std::vector<std::string> options);
             // you'll have to print the logo yourself
             //
