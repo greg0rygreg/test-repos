@@ -14,6 +14,8 @@ namespace libclimenu {
         // options of the menu
         std::vector<std::string> options;
         // menu configurator/constructor
+        Menu(std::string name, std::string version, std::vector<std::string> options, std::string exitText);
+        // menu configurator/constructor
         Menu(std::string name, std::string version, std::vector<std::string> options);
         /*print the main menu and get user input and put it
         on `optionInt`
@@ -22,6 +24,10 @@ namespace libclimenu {
         
         else, don't print the name and version of the app*/
         void printAndGetInput(int &optionInt, bool printName);
+        // get a formatted string of the name and version of the menu
+        std::string getFormattedVersion();
+        private:
+        std::string exitText = "exit";
     };
     //clear the screen for the next operation
     void clear();

@@ -2,6 +2,12 @@
 #include <iostream>
 
 namespace libclimenu {
+    Menu::Menu(std::string name, std::string version, std::vector<std::string> options, std::string exitText) {
+        this->name = name;
+        this->version = version;
+        this->options = options;
+        this->exitText = exitText;
+    }
     Menu::Menu(std::string name, std::string version, std::vector<std::string> options) {
         this->name = name;
         this->version = version;
@@ -14,9 +20,12 @@ namespace libclimenu {
         for (int i = 0; i < this->options.size(); i++) {
             std::cout << "(" << i+1 << ") " << this->options[i] << "\n";
         }
-        std::cout << "(0) exit\n";
+        std::cout << "(0) " << this->exitText << "\n";
         std::cout << "\n(?) >> ";
         std::cin >> optionInt;
+    }
+    std::string Menu::getFormattedVersion() {
+        return this->name + " v" + this->version; // python moment
     }
     void clear() {
         std::cout << "\x1b[2J\x1b[H";
