@@ -30,6 +30,9 @@ namespace libclimenu {
     /*print an error incase of input invalidation or something
     else*/
     void error(std::string info);
+    /*print a warning incase something goes wrong and an error
+    doesn't fit*/
+    void warning(std::string info);
 }
 
 #endif // LIBCLIMENU_HPP

@@ -27,6 +27,9 @@ namespace libclimenu {
     void error(std::string info) {
         std::cout << "\x1b[1;31merror:\x1b[0m " << info << "\n";
     }
+    void warning(std::string info) {
+        std::cout << "\x1b[1;33mwarning:\x1b[0m " << info << "\n";
+    }
 }
 // linux: g++ libclimenu.cpp -fPIC -shared -o libclimenu.so
 // windows: g++ libclimenu.cpp -fPIC -shared -o libclimenu.dll
