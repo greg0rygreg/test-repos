@@ -45,7 +45,7 @@ int main() {
             }
             case 3: {
                 libclimenu::clear();
-                cout << menu.name << " v" << menu.version << "\n"
+                cout << menu.getFormattedVersion() << "\n"
                 << "licensed under MIT license\n"
                 << "this project comes from greg0rygreg/test-repos on github,\n"
                 << "because it is not big enough to have its own repo\n";
