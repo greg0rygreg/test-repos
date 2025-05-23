@@ -8,6 +8,7 @@ char** strsplit(char* s, char d, size_t* lr) {
   char** v = malloc(sizeof(char*));
   if (v == NULL){
     free(v);
+    free(w);
     return NULL;
   }
   size_t l = 0;
@@ -17,6 +18,7 @@ char** strsplit(char* s, char d, size_t* lr) {
     if (v == NULL) {
       for (size_t i = 0; i < l; i++) free(v[i]);
       free(v);
+      free(w);
       return NULL;
     }
     v[l - 1] = strdup(w);

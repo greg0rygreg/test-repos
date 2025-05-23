@@ -8,6 +8,8 @@ else
 	del = rm -f
 endif
 
+all: test clean
+
 test: test.o strutils.o
 	$(gc) -o test$(e) test.o strutils.o
 
