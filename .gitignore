@@ -1,1 +1,4 @@
 .vscode
+strutils/test.o
+strutils/test
+strutils/strutils.o
