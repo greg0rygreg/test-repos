@@ -11,8 +11,17 @@
 // `int* lr`: length return
 char** strsplit(char* s, char d, unsigned long* lr);
 
+// invert a string
+//
+// `char* s`: string
+char* strinvert(char* s);
+
 // free a double-pointer char (string array)
 // variable
-void cdptrfree(char** l, unsigned long ln);
+//
+// `char** sa`: string array
+//
+// `size_t ln`: array length
+void cdptrfree(char** sa, unsigned long ln);
 
 #endif
