@@ -4,11 +4,14 @@
 #include <string.h>
 
 char** strsplit(char* s, char d, size_t* lr) {
-  char* w = strtok(s, &d);
+  char* tmp = strdup(s);
+  if (tmp == NULL) return NULL;
+  char* w = strtok(tmp, &d);
   char** v = malloc(sizeof(char*));
   if (v == NULL){
     free(v);
     free(w);
+    free(tmp);
     return NULL;
   }
   size_t l = 0;
@@ -19,17 +22,30 @@ char** strsplit(char* s, char d, size_t* lr) {
       for (size_t i = 0; i < l; i++) free(v[i]);
       free(v);
       free(w);
+      free(tmp);
       return NULL;
     }
     v[l - 1] = strdup(w);
     w = strtok(NULL, &d);
   }
   *lr = l;
+  free(tmp);
   return v;
 }
 
-void cdptrfree(char** l, size_t ln) {
+char* strinvert(char* s) {
+  size_t l = strlen(s);
+  char* tmp = malloc(l);
+  if (tmp == NULL) return NULL;
+  for (int i = l - 1; i >= 0; i--) {
+    tmp[l - (i + 1)] = s[i];
+  }
+  tmp[l] = 0x00;
+  return tmp;
+}
+
+void cdptrfree(char** sa, size_t ln) {
   for (size_t i = 0; i < ln; i++)
-    free(l[i]);
-  free(l);
+    free(sa[i]);
+  free(sa);
 }
