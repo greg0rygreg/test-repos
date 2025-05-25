@@ -48,4 +48,10 @@ char* struppercase(char* s);
 // `char* s`: string
 char* strlowercase(char* s);
 
+// `strlowercase` and `struppercase`
+// in one function
+//
+// `char* s`: string
+char* strreversecase(char* s);
+
 #endif

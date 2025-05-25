@@ -65,21 +65,21 @@ char* strjoin(char** sa, size_t sal, char d) {
 
 char* strtitlecase(char* s) {
   char* temp = strdup(s);
+  if (!temp) return NULL;
   if (temp[0] >= 0x61 && temp[0] <= 0x7a)
     temp[0] -= 0x20;
-  for (size_t i = 0; i < strlen(temp); i++) {
-    if (i > 0) {
+  for (size_t i = 1; i < strlen(temp); i++) {
       if (temp[i - 1] == ' ' || temp[i - 1] == '-' || temp[i - 1] == '/' || temp[i - 1] == '\\' || temp[i - 1] == '\n') {
         if (temp[i] >= 0x61 && temp[i] <= 0x7a)
           temp[i] -= 0x20;
       }
-    }
   }
   return temp;
 }
 
 char* struppercase(char* s) {
   char* temp = strdup(s);
+  if (!temp) return NULL;
   for (size_t i = 0; i < strlen(temp); i++) {
     if (temp[i] >= 0x61 && temp[i] <= 0x7a)
       temp[i] -= 0x20;
@@ -89,12 +89,29 @@ char* struppercase(char* s) {
 
 char* strlowercase(char* s) {
   char* temp = strdup(s);
+  if (!temp) return NULL;
   for (size_t i = 0; i < strlen(temp); i++) {
     if (temp[i] >= 0x41 && temp[i] <= 0x5a)
       temp[i] += 0x20;
   }
   return temp;
 }
+
+char* strreversecase(char* s) {
+  char* temp = malloc(strlen(s) + 1);
+  if (!temp) return NULL;
+  for (size_t i = 0; i < strlen(s); i++) {
+    if (s[i] >= 0x41 && s[i] <= 0x5a)
+      temp[i] = s[i] + 0x20;
+    else if (s[i] >= 0x61 && s[i] <= 0x7a)
+      temp[i] = s[i] - 0x20;
+    else
+      temp[i] = s[i];
+  }
+  temp[strlen(s)] = 0x00;
+  return temp;
+}
+
 
 void cdptrfree(char** sa, size_t ln) {
   for (size_t i = 0; i < ln; i++)
