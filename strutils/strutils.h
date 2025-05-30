@@ -16,13 +16,13 @@ char** strsplit(char* s, char d, unsigned long* lr);
 // `char* s`: string
 char* strinvert(char* s);
 
-// free a double-pointer char (string array)
+// free a double-pointer variable
 // variable
 //
-// `char** sa`: string array
+// `void** sa`: double-pointer
 //
 // `size_t ln`: array length
-void cdptrfree(char** sa, unsigned long ln);
+void dptrfree(void** dp, unsigned long ln);
 
 // the polar opposite of `strsplit`
 //
@@ -54,4 +54,4 @@ char* strlowercase(char* s);
 // `char* s`: string
 char* strreversecase(char* s);
 
-#endif
+#endif // STRUTILS_H

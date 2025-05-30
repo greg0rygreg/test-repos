@@ -113,8 +113,8 @@ char* strreversecase(char* s) {
 }
 
 
-void cdptrfree(char** sa, size_t ln) {
+void dptrfree(void** dp, size_t ln) {
   for (size_t i = 0; i < ln; i++)
-    free(sa[i]);
-  free(sa);
+    free(dp[i]);
+  free(dp);
 }
