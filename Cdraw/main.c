@@ -6,19 +6,32 @@
 #include <time.h>
 
 int main(int argc, char** argv) {
-  char** options = malloc(sizeof(char*) * 2);
+  int anl = 75;
+  int fnl = 512;
+  for (int i = 0; i < argc; i++) {
+    if (strcmp("-anl", argv[i]) == 0)
+      anl = atoi(argv[i+1]);
+    if (strcmp("-fnl", argv[i]) == 0)
+      fnl = atoi(argv[i+1]);
+  }
+  int optionsN = 3;
+  int optionsAN = 1;
+  char** options = malloc(sizeof(char*) * 3);
   options[0] = strdup("make canvas");
-  options[1] = strdup("info");
+  options[1] = strdup("view canvas [WIP]");
+  options[2] = strdup("info");
   char** optionsA = malloc(sizeof(char*) * 1);
   optionsA[0] = strdup("toggle pixel");
 
-  Menu* menu = initMenu("Cdraw", "alpha1", options, 2, "exit");
-  Menu* drawing = initMenu("actions:", "", optionsA, 1, "save canvas & exit");
+  // i love making my own libs and using them to my advantage
+  Menu* menu = initMenu("Cdraw", "alpha1", options, optionsN, "exit");
+  Menu* drawing = initMenu("actions:", "", optionsA, optionsAN, "save canvas & exit");
 
   char* FV = getFormattedVersion(menu, 1);
 
   int b = 0;
 
+  // do you think it's a good idea to do this?
   Menu* menus[] = {menu, drawing};
   clear();
   while (!b) {
@@ -75,12 +88,12 @@ int main(int argc, char** argv) {
               clear();
               int x;
               int y;
-              printf("X coordinate: ");
+              printf("X coordinate (1-%d): ", w);
               scanf("%d", &x);
-              printf("Y coordinate: ");
+              printf("Y coordinate (1-%d): ", h);
               scanf("%d", &y);
               // i can do better than this i promise
-              if (x-1 <= h && y-1 <= w && y-1 >= 0 && x-1 >= 0)
+              if (x-1 <= w && y-1 <= h && y-1 >= 0 && x-1 >= 0)
                 canvas[y-1][x-1] = !canvas[y-1][x-1];
               clear();
               break;
@@ -89,10 +102,10 @@ int main(int argc, char** argv) {
               clear();
               b2++;
               time_t _time = time(NULL);
-              char aname[50];
-              printf("author name: ");
+              char aname[anl];
+              printf("author name (max. 50 characters): ");
               ignorePrev();
-              fgets(aname, 50, stdin);
+              fgets(aname, anl, stdin);
               aname[strlen(aname) - 1] = 0x00;
               // simplifying this to (h * 2) * w doesn't work for some reason....
               char* cuh1 = malloc(h * w + (h - 1) + 1);
@@ -108,21 +121,20 @@ int main(int argc, char** argv) {
               cuh1[strlen(cuh1) - 1] = 0x00;
               char* cuh[] = {"CDC", cuh1, aname};
               char* cuh3 = strjoin(cuh, 3, ';');
-              char fname[256];
-              printf("filename: ");
-              fgets(fname, 256, stdin);
+              char fname[fnl];
+              printf("filename (max. 256 characters & defaults to current directory): ");
+              fgets(fname, fnl, stdin);
               fname[strlen(fname) - 1] = 0x00;
               clear();
               FILE* file = fopen(fname, "w");
               if (!file) {
-                error("file could not be opened - take the formatted output");
+                error("file could not be opened - data will be printed");
                 // i found using fprintf to output data to stdout funny
-                // and i'm not sorry
+                // ...i'm not sorry
                 fprintf(stdout, "%s;%lo\n", cuh3, _time);
                 sep();
-              } else {
+              } else
                 fprintf(file, "%s;%lo", cuh3, _time);
-              }
               dptrfree((void**)canvas, h);
               free(cuh1);
               free(cuh3);
@@ -140,6 +152,12 @@ int main(int argc, char** argv) {
         break;
       }
       case 2: {
+        clear();
+        warning("work in progress");
+        sep();
+        break;
+      }
+      case 3: {
         clear();
         printf("%s - DRAWscii in C\nlicensed under MIT license\nmade with love and patience by greg\n", FV);
         sep();
