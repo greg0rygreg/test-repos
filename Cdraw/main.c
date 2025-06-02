@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
               b2++;
               time_t _time = time(NULL);
               char aname[anl];
-              printf("author name (max. 50 characters): ");
+              printf("author name (max. %d characters): ", anl);
               ignorePrev();
               fgets(aname, anl, stdin);
               aname[strlen(aname) - 1] = 0x00;
@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
               char* cuh[] = {"CDC", cuh1, aname};
               char* cuh3 = strjoin(cuh, 3, ';');
               char fname[fnl];
-              printf("filename (max. 256 characters & defaults to current directory): ");
+              printf("filename (max. %d characters & defaults to current directory): ", fnl);
               fgets(fname, fnl, stdin);
               fname[strlen(fname) - 1] = 0x00;
               clear();
