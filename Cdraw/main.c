@@ -53,6 +53,11 @@ int main(int argc, char** argv) {
         printf("height: ");
         scanf("%d", &h);
         clear();
+        if (h < 2 || w < 2) {
+          error("it's impossible to generate a canvas that has less than 2 pixels of height or width without being corrupted on the output");
+          sep();
+          break;
+        }
         int** canvas = malloc(sizeof(int*) * h);
         if (canvas == NULL) {
           error("canvas creation failed - breaking now");
@@ -120,6 +125,7 @@ int main(int argc, char** argv) {
               }
               cuh1[strlen(cuh1) - 1] = 0x00;
               char* cuh[] = {"CDC", cuh1, aname};
+              // i love making my own libs and using them to my advantage
               char* cuh3 = strjoin(cuh, 3, ';');
               char fname[fnl];
               printf("filename (max. %d characters & defaults to current directory): ", fnl);

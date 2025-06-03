@@ -55,6 +55,7 @@ char* getFormattedVersion(Menu* menu, int includeVersion) {
     return _temp;
 }
 void printAndGetInput(Menu* menu, int *optionInt, int printName, int includeVersion) {
+    *optionInt = 0; // that's all it took... interesting
     char* _temp = getFormattedVersion(menu, includeVersion);
     if (printName)
         printf("%s\n", _temp);
@@ -66,6 +67,7 @@ void printAndGetInput(Menu* menu, int *optionInt, int printName, int includeVers
     free(_temp);
 }
 void getSelMenuInput(SelMenu* menu, int *optionInt, int printAction, int includeCancel) {
+    *optionInt = 0;
     if (printAction)
         printf("%s\n", menu->action);
     for (long unsigned i = 0; i < menu->optionsN; i++)
