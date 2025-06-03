@@ -17,11 +17,10 @@ char** strsplit(char* s, char d, unsigned long* lr);
 char* strinvert(char* s);
 
 // free a double-pointer variable
-// variable
 //
-// `void** sa`: double-pointer
+// `void** dp`: double-pointer
 //
-// `size_t ln`: array length
+// `size_t ln`: double-pointer length
 void dptrfree(void** dp, unsigned long ln);
 
 // the polar opposite of `strsplit`
