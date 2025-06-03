@@ -1,18 +1,22 @@
 #include "libmenu.h"
 #include "strutils.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 int main(int argc, char** argv) {
-  int anl = 75;
+  int anl = 100;
   int fnl = 512;
+  int fl = 2048;
   for (int i = 0; i < argc; i++) {
     if (strcmp("-anl", argv[i]) == 0)
       anl = atoi(argv[i+1]);
     if (strcmp("-fnl", argv[i]) == 0)
       fnl = atoi(argv[i+1]);
+    if (strcmp("-fl", argv[i]) == 0)
+      fl = atoi(argv[i+1]);
   }
   int optionsN = 3;
   int optionsAN = 1;
@@ -24,7 +28,7 @@ int main(int argc, char** argv) {
   optionsA[0] = strdup("toggle pixel");
 
   // i love making my own libs and using them to my advantage
-  Menu* menu = initMenu("Cdraw", "alpha1", options, optionsN, "exit");
+  Menu* menu = initMenu("Cdraw", "alpha2", options, optionsN, "exit");
   Menu* drawing = initMenu("actions:", "", optionsA, optionsAN, "save canvas & exit");
 
   char* FV = getFormattedVersion(menu, 1);
@@ -40,7 +44,7 @@ int main(int argc, char** argv) {
     switch (mO) {
       case 0: {
         clear();
-        b = 1;
+        b++;
         break;
       }
       case 1: {
@@ -159,7 +163,58 @@ int main(int argc, char** argv) {
       }
       case 2: {
         clear();
-        warning("work in progress");
+        warning("might not work");
+        sep();
+        char fname[fnl];
+        printf("filename (max. %d characters & defaults to current directory): ", fnl);
+        ignorePrev();
+        fgets(fname, fnl, stdin);
+        fname[strlen(fname) - 1] = 0x00;
+        FILE* file = fopen(fname, "r");
+        clear();
+        if (!file) {
+          error("file doesn't exist");
+          sep();
+          break;
+        }
+        /*
+           _ _                         _                               
+          (_| )_ __ ___    _ __   ___ | |_   ___  ___  _ __ _ __ _   _ 
+          | |/| '_ ` _ \  | '_ \ / _ \| __| / __|/ _ \| '__| '__| | | |
+          | | | | | | | | | | | | (_) | |_  \__ \ (_) | |  | |  | |_| |
+          |_| |_| |_| |_| |_| |_|\___/ \__| |___/\___/|_|  |_|   \__, |
+                                                                  |___/
+        */
+        char buf[fl];
+        fgets(buf, fl, file);
+        size_t l = 0;
+        size_t lc = 0;
+        char** split = strsplit(buf, ';', &l);
+        if (strcmp(split[0], "CDC") != 0 || l != 4) {
+          error("file is in the wrong format");
+          sep();
+          fclose(file);
+          dptrfree((void**)split, l);
+          break;
+        }
+        time_t _time = atoi(split[3]);
+        struct tm* times = localtime(&_time);
+        char tb[100];
+        char* canvas = strdup(split[1]);
+        strftime(tb, 100, "%m/%d/%Y @ %H:%M:%S", times);
+        printf("painted by: %s\ntime painted: %s\n\n", split[2], tb);
+        for (size_t i = 0; i < strlen(canvas); i++) {
+          if (canvas[i] == '1')
+            printf("@ ");
+          else if (canvas[i] == '0')
+            printf(". ");
+          else if (canvas[i] == '.')
+            printf("\n");
+        }
+        printf("\n");
+        dptrfree((void**)split, l);
+        free(canvas);
+        fclose(file);
         sep();
         break;
       }
@@ -183,5 +238,4 @@ int main(int argc, char** argv) {
 }
 
 // compiling:
-// [...] means the thing inside it needs to be written on windows
-// clang -o main[.exe] main.c libmenu.c strutils.c
+// make
