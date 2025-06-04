@@ -110,7 +110,8 @@ int main(int argc, char** argv) {
             case 0: {
               clear();
               b2++;
-              time_t _time = time(NULL);
+              time_t _time;
+              time(&_time);
               char aname[anl];
               printf("author name (max. %d characters): ", anl);
               ignorePrev();
@@ -141,10 +142,10 @@ int main(int argc, char** argv) {
                 error("file could not be opened - data will be printed");
                 // i found using fprintf to output data to stdout funny
                 // ...i'm not sorry
-                fprintf(stdout, "%s;%lo\n", cuh3, _time);
+                fprintf(stdout, "%s;%ld\n", cuh3, _time);
                 sep();
               } else
-                fprintf(file, "%s;%lo", cuh3, _time);
+                fprintf(file, "%s;%ld", cuh3, _time);
               dptrfree((void**)canvas, h);
               free(cuh1);
               free(cuh3);
