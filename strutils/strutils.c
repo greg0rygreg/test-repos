@@ -118,3 +118,19 @@ void dptrfree(void** dp, size_t ln) {
     free(dp[i]);
   free(dp);
 }
+
+char* strreplace(char* s, char c, char r, str* rs) {
+  char* t = strdup(s);
+  for (int i = 0; i < strlen(t); i++) {
+    if (t[i] == c) {
+      t[i] = r;
+    }
+  }
+  if (rs == NULL)
+    return t;
+  else {
+    *rs = strdup(t);
+    free(t);
+    return NULL;
+  }
+}
