@@ -1,6 +1,8 @@
 #ifndef STRUTILS_H
 #define STRUTILS_H
 
+typedef char* str;
+
 // returns an array of strings containing
 // `s` split into smaller chunks by `d`
 //
@@ -52,5 +54,16 @@ char* strlowercase(char* s);
 //
 // `char* s`: string
 char* strreversecase(char* s);
+
+
+// replace all characters in `s`
+// with `c`
+//
+// `char* s`: string
+// `char c`: character to be replaced
+// `char r`: character to replace `c`
+// `char* rs`: return string (pass `NULL`)
+// to use `return`
+char* strreplace(char* s, char c, char r, str* rs);
 
 #endif // STRUTILS_H

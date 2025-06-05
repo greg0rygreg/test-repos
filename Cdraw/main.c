@@ -19,16 +19,17 @@ int main(int argc, char** argv) {
       fl = atoi(argv[i+1]);
   }
   int optionsN = 3;
-  int optionsAN = 1;
-  char** options = malloc(sizeof(char*) * 3);
+  int optionsAN = 2;
+  char** options = malloc(sizeof(char*) * optionsN);
   options[0] = strdup("make canvas");
-  options[1] = strdup("view canvas [WIP]");
+  options[1] = strdup("view canvas");
   options[2] = strdup("info");
-  char** optionsA = malloc(sizeof(char*) * 1);
+  char** optionsA = malloc(sizeof(char*) * optionsAN);
   optionsA[0] = strdup("toggle pixel");
+  optionsA[1] = strdup("reverse every pixel");
 
   // i love making my own libs and using them to my advantage
-  Menu* menu = initMenu("Cdraw", "alpha2", options, optionsN, "exit");
+  Menu* menu = initMenu("Cdraw", "alpha3-rc1", options, optionsN, "exit");
   Menu* drawing = initMenu("actions:", "", optionsA, optionsAN, "save canvas & exit");
 
   char* FV = getFormattedVersion(menu, 1);
@@ -107,16 +108,25 @@ int main(int argc, char** argv) {
               clear();
               break;
             }
+            case 2: {
+              clear();
+              for (int y = 0; y < h; y++) {
+                for (int x = 0; x < w; x++)
+                  canvas[y][x] = !canvas[y][x];
+              }
+              break;
+            }
             case 0: {
               clear();
               b2++;
-              time_t _time;
-              time(&_time);
+              time_t _time = time(NULL);
               char aname[anl];
               printf("author name (max. %d characters): ", anl);
               ignorePrev();
               fgets(aname, anl, stdin);
               aname[strlen(aname) - 1] = 0x00;
+              // char[] variables aren't modifiable
+              str nname = strreplace(aname, ';', '_', NULL);
               // simplifying this to (h * 2) * w doesn't work for some reason....
               char* cuh1 = malloc(h * w + (h - 1) + 1);
               int g = 0;
@@ -129,7 +139,7 @@ int main(int argc, char** argv) {
                 g++;
               }
               cuh1[strlen(cuh1) - 1] = 0x00;
-              char* cuh[] = {"CDC", cuh1, aname};
+              char* cuh[] = {"CDC", cuh1, nname};
               // i love making my own libs and using them to my advantage
               char* cuh3 = strjoin(cuh, 3, ';');
               char fname[fnl];
@@ -148,6 +158,7 @@ int main(int argc, char** argv) {
                 fprintf(file, "%s;%ld", cuh3, _time);
               dptrfree((void**)canvas, h);
               free(cuh1);
+              free(nname);
               free(cuh3);
               if (file) fclose(file);
               break;
@@ -164,8 +175,6 @@ int main(int argc, char** argv) {
       }
       case 2: {
         clear();
-        warning("might not work");
-        sep();
         char fname[fnl];
         printf("filename (max. %d characters & defaults to current directory): ", fnl);
         ignorePrev();
