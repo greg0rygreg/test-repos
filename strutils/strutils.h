@@ -6,17 +6,17 @@ typedef char* str;
 // returns an array of strings containing
 // `s` split into smaller chunks by `d`
 //
-// `char* s`: string
+// `str s`: string
 //
 // `char d`: delimiter
 //
 // `int* lr`: length return
-char** strsplit(char* s, char d, unsigned long* lr);
+str* strsplit(str s, char d, unsigned long* lr);
 
 // invert a string
 //
-// `char* s`: string
-char* strinvert(char* s);
+// `str s`: string
+str strinvert(str s);
 
 // free a double-pointer variable
 //
@@ -27,43 +27,49 @@ void dptrfree(void** dp, unsigned long ln);
 
 // the polar opposite of `strsplit`
 //
-// `char** sa`: string array
+// `str* sa`: string array
 //
 // `size_t sal`: string array length
 //
 // `char d`: delimiter
-char* strjoin(char** sa, unsigned long sal, char d);
+str strjoin(str* sa, unsigned long sal, char d);
 
 // title-case a string
 //
-// `char* s`: string
-char* strtitlecase(char* s);
+// `str s`: string
+str strtitlecase(str s);
 
 // uppercase a string
 //
-// `char* s`: string
-char* struppercase(char* s);
+// `str s`: string
+str struppercase(str s);
 
 // lowercase a string
 //
-// `char* s`: string
-char* strlowercase(char* s);
+// `str s`: string
+str strlowercase(str s);
 
 // `strlowercase` and `struppercase`
 // in one function
 //
-// `char* s`: string
-char* strreversecase(char* s);
+// `str s`: string
+str strreversecase(str s);
 
 
 // replace all characters in `s`
 // with `c`
 //
-// `char* s`: string
+// `str s`: string
 // `char c`: character to be replaced
 // `char r`: character to replace `c`
-// `char* rs`: return string (pass `NULL`)
+// `str rs`: return string (pass `NULL`)
 // to use `return`
-char* strreplace(char* s, char c, char r, str* rs);
+str strreplace(str s, char c, char r, str* rs);
+
+// find `c` in `s`
+//
+// `str s`: string
+// `char c`: character to find
+int strhas(str s, char c);
 
 #endif // STRUTILS_H

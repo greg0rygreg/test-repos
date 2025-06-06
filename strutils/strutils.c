@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-char** strsplit(char* s, char d, size_t* lr) {
-  char* tmp = strdup(s);
+str* strsplit(str s, char d, size_t* lr) {
+  str tmp = strdup(s);
   if (!tmp) return NULL;
-  char* w = strtok(tmp, &d);
-  char** v = malloc(sizeof(char*));
+  str w = strtok(tmp, &d);
+  str* v = malloc(sizeof(str));
   if (!v){
     free(v);
     free(w);
@@ -17,7 +17,7 @@ char** strsplit(char* s, char d, size_t* lr) {
   size_t l = 0;
   while (w != NULL) {
     l++;
-    v = realloc(v, l * sizeof(char*));
+    v = realloc(v, l * sizeof(str));
     if (!v) {
       for (size_t i = 0; i < l; i++) free(v[i]);
       free(v);
@@ -33,9 +33,9 @@ char** strsplit(char* s, char d, size_t* lr) {
   return v;
 }
 
-char* strinvert(char* s) {
+str strinvert(str s) {
   size_t l = strlen(s);
-  char* tmp = malloc(l);
+  str tmp = malloc(l);
   if (!tmp) return NULL;
   for (int i = l - 1; i >= 0; i--) {
     tmp[l - (i + 1)] = s[i];
@@ -44,13 +44,13 @@ char* strinvert(char* s) {
   return tmp;
 }
 
-char* strjoin(char** sa, size_t sal, char d) {
+str strjoin(str* sa, size_t sal, char d) {
   size_t toalloc = 0;
   for (size_t i = 0; i < sal; i++)
     toalloc += strlen(sa[i]);
   toalloc += sal - 1;
   toalloc += 1;
-  char* temp = malloc(toalloc);
+  str temp = malloc(toalloc);
   if (!temp) return NULL;
   temp[0] = 0x00;
   for (size_t i = 0; i < sal; i++) {
@@ -63,8 +63,8 @@ char* strjoin(char** sa, size_t sal, char d) {
   return temp;
 }
 
-char* strtitlecase(char* s) {
-  char* temp = strdup(s);
+str strtitlecase(str s) {
+  str temp = strdup(s);
   if (!temp) return NULL;
   if (temp[0] >= 0x61 && temp[0] <= 0x7a)
     temp[0] -= 0x20;
@@ -77,8 +77,8 @@ char* strtitlecase(char* s) {
   return temp;
 }
 
-char* struppercase(char* s) {
-  char* temp = strdup(s);
+str struppercase(str s) {
+  str temp = strdup(s);
   if (!temp) return NULL;
   for (size_t i = 0; i < strlen(temp); i++) {
     if (temp[i] >= 0x61 && temp[i] <= 0x7a)
@@ -87,8 +87,8 @@ char* struppercase(char* s) {
   return temp;
 }
 
-char* strlowercase(char* s) {
-  char* temp = strdup(s);
+str strlowercase(str s) {
+  str temp = strdup(s);
   if (!temp) return NULL;
   for (size_t i = 0; i < strlen(temp); i++) {
     if (temp[i] >= 0x41 && temp[i] <= 0x5a)
@@ -97,8 +97,8 @@ char* strlowercase(char* s) {
   return temp;
 }
 
-char* strreversecase(char* s) {
-  char* temp = malloc(strlen(s) + 1);
+str strreversecase(str s) {
+  str temp = malloc(strlen(s) + 1);
   if (!temp) return NULL;
   for (size_t i = 0; i < strlen(s); i++) {
     if (s[i] >= 0x41 && s[i] <= 0x5a)
@@ -119,8 +119,8 @@ void dptrfree(void** dp, size_t ln) {
   free(dp);
 }
 
-char* strreplace(char* s, char c, char r, str* rs) {
-  char* t = strdup(s);
+str strreplace(str s, char c, char r, str* rs) {
+  str t = strdup(s);
   for (int i = 0; i < strlen(t); i++) {
     if (t[i] == c) {
       t[i] = r;
@@ -133,4 +133,12 @@ char* strreplace(char* s, char c, char r, str* rs) {
     free(t);
     return NULL;
   }
+}
+
+int strhas(str s, char c) {
+  for (int i = 0; i < strlen(s); i++) {
+    if (s[i] == c)
+      return 1;
+  }
+  return 0;
 }
