@@ -1,3 +1,7 @@
+// 06/06/2025
+// i have replaced (almost) every char* with str because inside strutils.h,
+// there's a typedef that defines char* to be str.
+// i'm not sure if this will work for a long time, but... yeah
 #include "libmenu.h"
 #include "strutils.h"
 #include <stddef.h>
@@ -6,10 +10,11 @@
 #include <string.h>
 #include <time.h>
 
-int main(int argc, char** argv) {
-  int anl = 100;
+int main(int argc, str* argv) {
+  int anl = 128;
   int fnl = 512;
   int fl = 2048;
+  int debug = 0;
   for (int i = 0; i < argc; i++) {
     if (strcmp("-anl", argv[i]) == 0)
       anl = atoi(argv[i+1]);
@@ -17,22 +22,46 @@ int main(int argc, char** argv) {
       fnl = atoi(argv[i+1]);
     if (strcmp("-fl", argv[i]) == 0)
       fl = atoi(argv[i+1]);
+    if (strcmp("-d", argv[i]) == 0)
+      debug = 1;
   }
   int optionsN = 3;
   int optionsAN = 2;
-  char** options = malloc(sizeof(char*) * optionsN);
+  str* options = malloc(sizeof(str) * optionsN);
+  if (!options) return 1;
+  // i don't want to hear ANY of you say i need to handle errors in here too.
+  // if it says (null) or outputs garbage mem it's YOUR problem for not having
+  // enough memory available at the disposal of this program
   options[0] = strdup("make canvas");
   options[1] = strdup("view canvas");
   options[2] = strdup("info");
-  char** optionsA = malloc(sizeof(char*) * optionsAN);
+  str* optionsA = malloc(sizeof(str) * optionsAN);
+  if (!optionsA) {
+    dptrfree((void**)options, optionsN);
+    return 1;
+  }
   optionsA[0] = strdup("toggle pixel");
-  optionsA[1] = strdup("reverse every pixel");
+  optionsA[1] = strdup("invert every pixel");
 
   // i love making my own libs and using them to my advantage
-  Menu* menu = initMenu("Cdraw", "alpha3-rc1", options, optionsN, "exit");
+  Menu* menu = initMenu("Cdraw", "alpha3-rc2", options, optionsN, "exit");
+  // manual memory management is very fun indeed
+  //
+  // (i hate it)
+  if (!menu) {
+    dptrfree((void**)options, optionsN);
+    dptrfree((void**)optionsA, optionsAN);
+    return 1;
+  }
   Menu* drawing = initMenu("actions:", "", optionsA, optionsAN, "save canvas & exit");
+  if (!drawing) {
+    dptrfree((void**)options, optionsN);
+    dptrfree((void**)optionsA, optionsAN);
+    free(menu);
+    return 1;
+  }
 
-  char* FV = getFormattedVersion(menu, 1);
+  str FV = getFormattedVersion(menu, 1);
 
   int b = 0;
 
@@ -124,11 +153,25 @@ int main(int argc, char** argv) {
               printf("author name (max. %d characters): ", anl);
               ignorePrev();
               fgets(aname, anl, stdin);
-              aname[strlen(aname) - 1] = 0x00;
+              aname[strlen(aname) - 1] = 0x0;
               // char[] variables aren't modifiable
+              // horrible fate
               str nname = strreplace(aname, ';', '_', NULL);
-              // simplifying this to (h * 2) * w doesn't work for some reason....
-              char* cuh1 = malloc(h * w + (h - 1) + 1);
+              // simplifying h * w + (h - 1) + 1 to (h * 2) * w doesn't work for some reason....
+              // also, i've tried redoing the code from this line until the line that sets the
+              // second from last character to a null terminator, but failed MISERABLY as it not
+              // only output garbage memory when height or width were below 2, it started to output
+              // 2 bytes of garbage memory EVERY time at the start, so the check in line 64 will
+              // remain there until i'm smart enough to PREDICT what this god-doesn't-even-know-
+              // what-this-is abomination of code will generate.
+              str cuh1 = malloc(h * w + (h - 1) + 1);
+              if (!cuh1) {
+                clear();
+                // truly heartbreaking
+                error("generating canvas failed - your artwork has NOT been saved...");
+                sep();
+                break;
+              }
               int g = 0;
               for (int i = 0; i < h; i++) {
                 for (int j = 0; j < w; j++) {
@@ -138,14 +181,14 @@ int main(int argc, char** argv) {
                 cuh1[g] = '.';
                 g++;
               }
-              cuh1[strlen(cuh1) - 1] = 0x00;
-              char* cuh[] = {"CDC", cuh1, nname};
+              cuh1[strlen(cuh1) - 1] = 0x0;
+              str cuh[] = {"CDC", cuh1, nname};
               // i love making my own libs and using them to my advantage
-              char* cuh3 = strjoin(cuh, 3, ';');
+              str cuh3 = strjoin(cuh, 3, ';');
               char fname[fnl];
               printf("filename (max. %d characters & defaults to current directory): ", fnl);
               fgets(fname, fnl, stdin);
-              fname[strlen(fname) - 1] = 0x00;
+              fname[strlen(fname) - 1] = 0x0;
               clear();
               FILE* file = fopen(fname, "w");
               if (!file) {
@@ -179,7 +222,7 @@ int main(int argc, char** argv) {
         printf("filename (max. %d characters & defaults to current directory): ", fnl);
         ignorePrev();
         fgets(fname, fnl, stdin);
-        fname[strlen(fname) - 1] = 0x00;
+        fname[strlen(fname) - 1] = 0x0;
         FILE* file = fopen(fname, "r");
         clear();
         if (!file) {
@@ -199,7 +242,7 @@ int main(int argc, char** argv) {
         fgets(buf, fl, file);
         size_t l = 0;
         size_t lc = 0;
-        char** split = strsplit(buf, ';', &l);
+        str* split = strsplit(buf, ';', &l);
         if (strcmp(split[0], "CDC") != 0 || l != 4) {
           error("file is in the wrong format");
           sep();
@@ -210,9 +253,11 @@ int main(int argc, char** argv) {
         time_t _time = atoi(split[3]);
         struct tm* times = localtime(&_time);
         char tb[100];
-        char* canvas = strdup(split[1]);
+        str canvas = strdup(split[1]);
         strftime(tb, 100, "%m/%d/%Y @ %H:%M:%S", times);
         printf("painted by: %s\ntime painted: %s\n\n", split[2], tb);
+        // this is terrible fucking code but it's the best i can do
+        // so if it works, don't touch it
         for (size_t i = 0; i < strlen(canvas); i++) {
           if (canvas[i] == '1')
             printf("@ ");
