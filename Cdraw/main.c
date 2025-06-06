@@ -1,7 +1,7 @@
 // 06/06/2025
 // i have replaced (almost) every char* with str because inside strutils.h,
 // there's a typedef that defines char* to be str.
-// i'm not sure if this will work for a long time, but... yeah
+// i'm not sure if this will work on the long-term, but... yeag
 #include "libmenu.h"
 #include "strutils.h"
 #include <stddef.h>
@@ -87,10 +87,20 @@ int main(int argc, str* argv) {
         printf("height: ");
         scanf("%d", &h);
         clear();
-        if (h < 2 || w < 2) {
-          error("it's impossible to generate a canvas that has less than 2 pixels of height or width without being corrupted on the output");
+        if (h * w == 0) { // simple
+          error("width/height can't be zero. period.");
           sep();
           break;
+        }
+        if (h <= 2) {
+          error("height can't be less than or equal to 2. period.");
+          sep();
+          break;
+        }
+        if ((h >= 15 || w >= 15) && !debug) {
+          error("pass the -d parameter when executing this program to bypass this check (canvas can't have height/width >= 15)");
+          sep();
+          break;  
         }
         int** canvas = malloc(sizeof(int*) * h);
         if (canvas == NULL) {
@@ -192,7 +202,7 @@ int main(int argc, str* argv) {
               clear();
               FILE* file = fopen(fname, "w");
               if (!file) {
-                error("file could not be opened - data will be printed");
+                warning("file could not be opened - data will be printed");
                 // i found using fprintf to output data to stdout funny
                 // ...i'm not sorry
                 fprintf(stdout, "%s;%ld\n", cuh3, _time);
