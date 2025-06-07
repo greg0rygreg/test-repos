@@ -1,2 +1,0 @@
-# Cdraw
-DRAWscii but C
